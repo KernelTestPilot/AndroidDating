@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonTitle, IonToolbar,IonProgressBar } from '@ionic/angular/standalone';
 import {Camera,CameraResultType, CameraSource } from '@capacitor/camera';
 import { SocketService } from '../services/socket.service';
 import { Router } from '@angular/router'; 
@@ -11,10 +11,11 @@ import { Router } from '@angular/router';
   templateUrl: './login.page.html',
   styleUrls: ['./login.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule,IonProgressBar]
 })
 export class LoginPage implements OnInit {
   image = '';
+  isLoading: boolean = false;
   constructor(private socketservice: SocketService, private router: Router) { }
 
   ngOnInit() {
@@ -34,11 +35,21 @@ export class LoginPage implements OnInit {
       //Send the image to the backend for analyzeing if user can login..
       const imageData = image.base64String;
       //We can make this observable in the future to check login status..
-      this.socketservice.setSession({ user: "oskar", image: imageData });
-      this.router.navigate(['/tabs/tab2'])
-    }else{
-      this.router.navigate(['/tabs/tab1'])
+      this.socketservice.setSession({ user: "oskar", image: imageData })
+      //this.router.navigate(['/tabs/tab2'])
+      this.isLoading = true;
+      this.socketservice.loginStatus().subscribe((response) => {
+        if (response.success) {
+          // Set auth guard here
+          this.isLoading = false;
+          this.router.navigate(['/tabs/tab2']);
+        } else {
+          this.isLoading = false;
+          this.router.navigate(['/tabs/tab1']);
+        }
+      });
     }
+
   }
 
 }

@@ -1,0 +1,20 @@
+ion-progress-bar {
+    --background: #f3e895;
+    --progress-background: #09c567;
+  }
+
+  #containerCenter {
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    height: 100vh; 
+  }
+  #container {
+    text-align: center;
+  
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }

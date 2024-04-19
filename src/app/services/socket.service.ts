@@ -51,6 +51,14 @@ import { map } from 'rxjs/operators';
       });
     })
   }
+  
+  loginStatus():Observable<any>{
+    return new Observable<boolean>((observer) => {
+      this.webSocket.on('login-status', (success: boolean) => {
+        observer.next(success);
+      });
+    })
+  }
   getSession() {
    return this.webSocket.emit('get-session');
   }
