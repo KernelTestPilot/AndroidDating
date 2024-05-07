@@ -5,7 +5,7 @@ import { IonContent, IonHeader, IonTitle, IonToolbar,IonProgressBar } from '@ion
 import {Camera,CameraResultType, CameraSource } from '@capacitor/camera';
 import { SocketService } from '../services/socket.service';
 import { Router } from '@angular/router'; 
-
+import { AuthService } from '../services/auth.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
 export class LoginPage implements OnInit {
   image = '';
   isLoading: boolean = false;
-  constructor(private socketservice: SocketService, private router: Router) { }
+  constructor(private socketservice: SocketService, private router: Router,private authservice: AuthService) { }
 
   ngOnInit() {
     this.captureimage();
@@ -42,6 +42,8 @@ export class LoginPage implements OnInit {
         if (response.success) {
           // Set auth guard here
           this.isLoading = false;
+          this.authservice.login(JSON.parse(response.user), response.success)
+          console.log(response.user)
           this.router.navigate(['/tabs/tab2']);
         } else {
           this.isLoading = false;
